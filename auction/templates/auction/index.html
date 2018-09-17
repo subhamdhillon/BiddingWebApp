@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+	{% if item_count %}
+		<ul>
+			<li><a href="{% url 'item-list' %}">Items:{{item_count}}</a></li>
+			<li><a href="{% url 'bid-list' %}">Bids:{{bid_count}}</a></li>
+		</ul>
+	{% else %}
+		<p>There are no items in the auction right now</p>
+	{% endif %}
+{% endblock %}

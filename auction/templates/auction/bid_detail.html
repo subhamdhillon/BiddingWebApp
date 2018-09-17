@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}{{bid.item}}{% endblock %}
+
+{% block content %}
+	<img src="{{bid.item.item_image.url}}" style="width: 200px;height: 200px;">
+	<p>{{bid.item}}</p>
+	<p>{{bid.bid_amount}}</p>
+	<p><a href="{% url 'update-bid' bid.pk %}">Update bid</a></p>
+	<p><a href="{% url 'delete-bid' bid.pk %}">Delete bid</a></p>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h3 id="demo"></h3>
+	<script>
+		var ts = parseInt({{item.test_view}});
+		var x = setInterval(function() {
+		document.getElementById("demo").innerHTML = Math.floor(ts/86400) +" day " + Math.floor((ts%86400)/3600) + " hours " + 
+		Math.floor((ts%3600)/60)+  " minutes " + Math.floor((ts%60)/1) + " seconds";
+		ts = ts-1;
+		 if (ts < 0) {
+        clearInterval(x);
+        document.getElementById("demo").innerHTML = "EXPIRED";
+    }
+		}, 1000);
+	</script>
+{% endblock %}

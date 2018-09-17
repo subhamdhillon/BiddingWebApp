@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}{{item.item_name}}{% endblock %}
+
+{% block content %}
+	<div class="container-fluid songs-container">
+    <div class="row">
+        <!-- Left Item Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {% if item.item_image %}
+                        <img src="{{ item.item_image.url }}" class="img-responsive">
+                    {% else %}
+                        <h3>No image to display</h3>
+                    {% endif %}
+                    <h3>Item-{{item.item_name}}</h3>
+                    <h3>Added-{{item.item_created}}</h3>
+                    <h4>Base Price-{{item.base_price}}</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Bids Info -->
+        <div class="col-sm-8 col-md-9">
+        	<ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" class="active"><a href="{% url 'item-list' %}">View All</a></li>
+                <li role="presentation"><a href="{% if item.get_time_left %}{% url 'add-bid' item.id %}{% else %}#{% endif %}">Add Bid</a></li>
+            </ul>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>{{item.item_description}}</h4>
+                    <h4>This auction {% if item.get_time_left %}closes in 
+                        <p id="demo"></p>
+                        <script>
+                            var ts = parseInt({{item.test_view}});
+                            var x = setInterval(function() {
+                            document.getElementById("demo").innerHTML = Math.floor(ts/86400) +" day " + Math.floor((ts%86400)/3600) + " hours " +
+                            Math.floor((ts%3600)/60)+  " minutes " + Math.floor((ts%60)/1) + " seconds";
+                            ts = ts-1;
+                             if (ts < 0) {
+                            clearInterval(x);
+                            document.getElementById("demo").innerHTML = "EXPIRED";}
+                            }, 1000);
+                        </script>
+                    {% else %}is closed.{% endif %}</h4>
+                    {% if item.get_time_left %}
+                        <h4>All Bids</h4>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Bidder</th>
+                                <th>Bid Price</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                        	{% if item.bid_set.all.count > 0 %}
+                        		{% for bid in item.bid_set.all %}
+                            		<tr {% if request.user == bid.bidder %} class="info" {% endif %}>
+                                		<td>{{ bid.bidder }}</td>
+                                		<td>{{ bid.bid_amount }}</td>
+                                		<td>Ongoing</td>
+                            		</tr>
+                        		{% endfor %}
+                        	{% else %}
+                        		<tr>
+                        			<td>No bids on this item</td>
+                        		</tr>
+                        	{% endif %}
+                        {% else %}
+                            {% ifequal request.user item.get_winner %}You are currently the winning bidder!{% endifequal %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

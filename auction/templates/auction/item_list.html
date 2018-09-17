@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Items In the Auction{% endblock %}
+
+{% block content %}
+	<div class="albums-container container-fluid">
+    <div class="row">
+        {% if item_list %}
+            <form action="{% url 'item-list' %}" method="POST">
+                {% csrf_token %}
+                <input type="radio" name="category" value="all"> All
+                <input type="radio" name="category" value="g"> General
+                <input type="radio" name="category" value="h"> Household
+                <input type="radio" name="category" value="e"> Electronics
+                <input type="radio" name="category" value="f"> Food
+                <input type="radio" name="category" value="c"> Clothing
+                <input type="radio" name="sort" value="cheap"> Cheap
+                <input type="radio" name="sort" value="exp"> Expensive
+                <input type="radio" name="sort" value="new"> New
+                <input type="submit" name="Submit">
+            </form>
+            {% for item in item_list %}
+                <div class="col-sm-4 col-lg-2">
+                    <div class="thumbnail">
+                        <a href="{% url 'item-detail' item.id %}">
+                            <img src="{{ item.item_image.url }}" class="img-responsive" style="width: 350px;height: 200px;">
+                        </a>
+                        <div>
+                            <h2>{{ item.item_name }}</h2>
+                            <h4>Base Price- {{ item.base_price }}</h4>
+                            <h4>{% if item.get_time_left %}Current Bid-{{item.get_current_bid}}{% else %}Bid Closed{% endif %}</h4>
+                            <!-- View Details -->
+                            <a href="{% url 'item-detail' item.id %}" class="btn btn-primary btn-sm" role="button">View Details</a>
+                            <!-- Favorite Album -->
+                            <a href="{% url 'add-bid' item.id %}" class="btn btn-default btn-sm btn-favorite
+                            {% if item.get_time_left %}{% else %}disabled{% endif %}" role="button">
+                                <span class="glyphicon glyphicon-plus"></span>&nbsp; Bid
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+                {% cycle '' '' '' '' '' '<div class="clearfix visible-lg"></div>' %}
+            {% endfor %}
+        {% else %}
+            <div class="col-sm-12">
+                <br>
+                <a href="{% url 'add-item' %}">
+                    <button type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp; Add an Item
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    </div>
+{% endblock %}
